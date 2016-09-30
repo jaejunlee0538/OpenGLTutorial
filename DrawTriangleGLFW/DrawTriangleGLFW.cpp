@@ -42,8 +42,8 @@ int main() {
 	glewInit();
 
 	// get version info
-	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
-	const GLubyte* version = glGetString(GL_VERSION); // version as a string
+	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string(GPU name)
+	const GLubyte* version = glGetString(GL_VERSION); // version as a string(OpenGL version)
 	printf("Renderer: %s\n", renderer);
 	printf("OpenGL version supported %s\n", version);
 
@@ -73,9 +73,21 @@ int main() {
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vs, 1, &vertex_shader, NULL);
 	glCompileShader(vs);
+	GLint vs_good = GL_FALSE;
+	glGetShaderiv(vs, GL_COMPILE_STATUS, &vs_good);
+	if (!vs_good){
+		fprintf(stderr, "Error in compiling vertex shader\n");
+		return 0;
+	}
 	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fs, 1, &fragment_shader, NULL);
 	glCompileShader(fs);
+	GLint fs_good = GL_FALSE;
+	glGetShaderiv(fs, GL_COMPILE_STATUS, &fs_good);
+	if (!fs_good){
+		fprintf(stderr, "Error in compiling fragment shader\n");
+		return 0;
+	}
 
 	GLuint shader_programme = glCreateProgram();
 	glAttachShader(shader_programme, fs);
